@@ -47,6 +47,6 @@ def killall() -> bool:
     """
     cmd = 'sudo killall openvpn'
     results = call(cmd, shell=True)
-    if any(['No matching processes were found' in results, 'no process found' in results]):
+    if 'No matching processes were found' in results or 'no process found' in results:
         return True
     return False
