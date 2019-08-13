@@ -4,7 +4,7 @@ openvpn_control/utils/openvpn.py
 import time
 import logging
 
-from subprocess import call, Popen, PIPE, TimeoutExpired
+from subprocess import Popen, PIPE, TimeoutExpired
 
 from openvpn_control.settings import WHICH_OPENVPN
 
@@ -46,7 +46,11 @@ def killall() -> bool:
     :return:
     """
     cmd = 'sudo killall openvpn'
-    results = call(cmd, shell=True)
-    if 'No matching processes were found' in results or 'no process found' in results:
-        return True
-    return False
+    res = Popen(cmd, shell=True, stdout=PIPE, stderr=PIPE)
+    comm = res.communicate()
+    results = str(comm[1])
+    conditions = [
+        'No matching processes were found' in results,
+        'no process found' in results
+    ]
+    return any(conditions)

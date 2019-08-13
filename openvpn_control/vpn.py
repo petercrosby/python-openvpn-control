@@ -74,12 +74,12 @@ class OpenVpnControl:
             logger.exception(e)
             raise
 
+        # Close any active connections
+        self.close_connection()
+
         fileio.write_configuration(self.config_dir,
                                    self.tmp_auth, '{}\n{}\n'.format(config['user'], config['pw']),
                                    self.tmp_config, vpn_conf_lines)
-
-        # Close any active connections
-        self.close_connection()
 
         connected = False
         retries = 3
@@ -99,7 +99,7 @@ class OpenVpnControl:
 
         return connected
 
-    def close_connection(self) -> bool:
+    def close_connection(self, cleanup: bool = True) -> bool:
         """
 
         :return:
@@ -113,5 +113,6 @@ class OpenVpnControl:
                 break
             retries -= 1
 
-        fileio.remove_directory_contents(self.config_dir)
+        if cleanup:
+            fileio.remove_directory_contents(self.config_dir)
         return disconnected

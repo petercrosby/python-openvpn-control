@@ -27,8 +27,7 @@ def ensure_directory_exists(directory_path: str) -> True:
         except OSError as e:
             logger.exception(e)
             raise
-        else:
-            logger.debug(f'Created directory: {directory_path}')
+        logger.info(f'Created directory: {directory_path}')
     return True
 
 
